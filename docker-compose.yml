@@ -9,6 +9,8 @@ services:
     ports:
       - "127.0.0.1:29418:29418"
       - "127.0.0.1:8080:8080"
+    environment:
+      - CANONICAL_WEB_URL=http://localhost:8080
 volumes:
   git-volume:
   index-volume:
