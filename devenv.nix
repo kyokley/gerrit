@@ -1,14 +1,11 @@
-{
-  pkgs,
-  ...
-}:
+{pkgs, ...}: {
+  cachix.pull = ["horus"];
 
-{
   # https://devenv.sh/basics/
   env.GREET = "gerrit";
 
   # https://devenv.sh/packages/
-  packages = [ pkgs.docker ];
+  packages = [pkgs.docker];
 
   # https://devenv.sh/languages/
   # languages.rust.enable = true;
@@ -23,6 +20,15 @@
   scripts = {
     hello.exec = ''
       echo Welcome to $GREET
+    '';
+    up.exec = ''
+      ${pkgs.docker}/bin/docker compose up "$@"
+    '';
+    down.exec = ''
+      ${pkgs.docker}/bin/docker compose down "$@"
+    '';
+    shell.exec = ''
+      ${pkgs.docker}/bin/docker exec gerrit /bin/bash
     '';
   };
 
