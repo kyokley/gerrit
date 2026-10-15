@@ -1,0 +1,15 @@
+services:
+  gerrit:
+    image: gerritcodereview/gerrit
+    volumes:
+      - git-volume:/var/gerrit/git
+      - index-volume:/var/gerrit/index
+      - cache-volume:/var/gerrit/cache
+      - ./etc:/var/gerrit/etc
+    ports:
+      - "127.0.0.1:29418:29418"
+      - "127.0.0.1:8080:8080"
+volumes:
+  git-volume:
+  index-volume:
+  cache-volume:
