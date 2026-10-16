@@ -1,7 +1,7 @@
 ---
 name: jj-ephemeral-gerrit-review
 description: Run an isolated, temporary loopback Docker Gerrit for an explicitly selected Jujutsu revset, then inspect and safely resume its review feedback. Use only for ephemeral local Docker Gerrit review and feedback cycles; not for generic feature planning, permanent Gerrit, OCI registries, GitHub review, or production services.
-compatibility: Requires Docker Compose, Jujutsu native Gerrit upload support, and a verified Gerrit image version. Manual browser setup and explicit publish approval may be required.
+compatibility: Requires Docker Compose, Jujutsu native Gerrit upload support, and a verified Gerrit image version. Browser account setup requires explicit user authorization; publication requires separate explicit approval.
 ---
 
 # Ephemeral Docker Gerrit review for Jujutsu
@@ -33,8 +33,8 @@ Use named, uniquely scoped volumes for Gerrit's `etc`, `git`, `db`, `index`, `ca
 1. Verify the pinned image's documented entrypoint and required setup. For the verified Docker Gerrit v3.14.4 Ubuntu 24 entrypoint, init is run when All-Projects is absent or when the `init` argument is supplied. Run `docker compose ... run --rm gerrit init` only against brand-new, empty volumes; Gerrit init can upgrade state. Never reinitialize an existing instance during resume.
 2. Verify the pinned image supplies Bash and Git before using the reference recipe. After init and before starting the daemon, configure the actual persistent `etc/gerrit.config` with `auth.type = DEVELOPMENT_BECOME_ANY_ACCOUNT`; verify the persisted value. Stop if the image path or tools differ. The extra `logs` volume is optional and must match the selected image's logging configuration.
 3. Start only after setup authorization. Verify readiness, exact loopback URLs/ports, persisted auth mode, and a new unique instance/project. Do not call it ready from a container-start status alone.
-4. Pause for human browser bootstrap. Give the exact Web URL and steps: open Gerrit, select **Become**, select **New Account**, and complete registration. In verified v3.14.4 behavior, the first registered account is granted administrator access. Then create a second, distinct automation account. If the pinned Gerrit version's UI differs, stop and ask; do not guess. Do not infer REST access from the Become UI or use `/a/` without real credentials, `X-Gerrit-RunAs`, or guessed usernames. Ask one immediate question if required account/setup choices are unclear; for browser work, give concrete steps and wait for the user's confirmation.
-5. Establish automation authentication explicitly for the second account. Register its dedicated SSH public key using supported account UI/API and create an HTTP password/token only if needed for documented REST calls. Keep secrets out of output and checkpoint. A human must confirm the account, key registration, and access before automation continues. Do not change global SSH settings.
+4. Account setup is a separate authorization boundary: provisioning this review alone does not authorize account creation or sign-in. If the user explicitly authorizes isolated account setup and a browser is available, use the browser skill and the existing/explicitly selected CDP session to inspect and complete the rendered Gerrit UI; follow [authorized browser account setup](references/docker-and-api.md#authorized-browser-account-setup). Do not pause merely because Gerrit 3.14.4 shows **Sign in → Register → New Account** instead of **Become → New Account**. If browser access is unavailable, offer concise manual steps and wait for the user's confirmation. Stop and ask if the UI or account state is materially unexpected.
+5. Before registering, inspect the existing accounts and verify intended administrator access through the UI. Reuse an existing admin only when the user explicitly chooses that and the account's membership/access is verified; if a supposedly fresh instance already has accounts or its state is unexpected, stop and ask. Only a truly empty account state can support the documented first-account-admin behavior; never infer admin rights from a username or creation order when accounts preexist. Then create only the specifically authorized distinct automation account and register the authorized dedicated SSH public key using Settings → SSH Keys. Verify its identity, key material, **Valid** status, and persistence after reload before using it. Do not invent email identity, grant privileges, or create an HTTP credential unless one is needed and separately authorized. Never treat browser cookies as REST credentials or use `X-Gerrit-RunAs`, guessed credentials, or unauthenticated `/a/` calls. Keep secrets out of output and checkpoint. Do not change global SSH settings.
 6. Use a dedicated restricted temporary private key and per-instance `known_hosts`. Verify the Gerrit SSH host key through a trusted channel such as the verified local container before enabling `StrictHostKeyChecking`; never use `StrictHostKeyChecking=no` or trust an unverified first connection. Protect files and clean credentials only on explicit cleanup.
 
 ## 3. Create project and seed only the base
@@ -64,7 +64,7 @@ Do not seed any selected review commit. Verify branch head equals the intended b
 
 ## 5. Checkpoint and repeat review cycles
 
-Keep a private, human-readable checkpoint at a unique absolute temp path, permission-restricted where supported. Include instance/project IDs, exact Compose file and project name, named volumes, image tag/digest, versions, loopback ports/URL, branch/base SHA, original revset text and snapshot of stable jj change IDs, automation account ID, and per-change Gerrit Change-Id, change number, uploaded SHA, current patch set, URLs, feedback cursors, and last confirmed actions. Never store passwords, tokens, cookies, private-key contents, or reusable secret values. Resume only after verifying this checkpoint matches live containers, volumes, project, branch, and base. Missing/mismatched state means stop and ask; never recreate or reinitialize over it.
+Keep a private, human-readable checkpoint at a unique absolute temp path, permission-restricted where supported. Include instance/project IDs, exact Compose file and project name, named volumes, image tag/digest, versions, loopback ports/URL, branch/base SHA, original revset text and snapshot of stable jj change IDs, verified administrator and automation account usernames/IDs, registration stage, SSH public-key identity/fingerprint or algorithm/material match, key validity/persistence, and per-change Gerrit Change-Id, change number, uploaded SHA, current patch set, URLs, feedback cursors, and last confirmed actions. Record pending versus completed verification accurately; never store passwords, tokens, cookies, private-key contents, or reusable secret values. Resume only after verifying this checkpoint matches live containers, volumes, project, branch, and base. Missing/mismatched state means stop and ask; never recreate or reinitialize over it.
 
 For updates, address the original changes by stable jj change ID, not by blindly reusing a revset that may now select different commits. Inspect each target and descendants first. Amend/rewrite the review-owned jj change with `jj edit <owned-change-id>` when the fix belongs in that change; preserve its description and explicit Change-Id trailer, test it, and inspect every affected descendant. This updates the same Gerrit change. Restore the previous safe empty working copy only if it does not touch unrelated work. A genuinely new descendant commit has a distinct jj change ID and normally a distinct Gerrit Change-Id/change; use it only when a separate Gerrit change is intended. Never copy the original Change-Id onto both parent and child. Never blindly squash, rebase, abandon, or restore a stale operation. Follow stricter existing skill approval before any history rewrite.
 
@@ -81,7 +81,7 @@ After every requested change, recheck exact stable IDs and effective closure, dr
 
 ## 7. Pause, resume, and cleanup
 
-On manual setup, polling timeout, auth failure, ambiguous feedback, or any safety mismatch: stop automation, preserve verified state and checkpoint, state the blocker and exact manual steps or resume action, and wait for the user. Do not imply that polling or other work will continue after the pause. Never background work. Resume only from a verified checkpoint; do not start a replacement instance or reinitialize existing state.
+On unavailable browser/manual setup, polling timeout, auth failure, ambiguous feedback, or any safety mismatch: stop automation, preserve verified state and checkpoint, state the blocker and exact manual steps or resume action, and wait for the user. Do not imply that polling or other work will continue after the pause. Never background work. Resume only from a verified checkpoint; do not start a replacement instance or reinitialize existing state.
 
 Keep the instance, volumes, keys, and ledger until the user explicitly requests cleanup. Before cleanup, identify the exact unique Compose project, absolute file, containers, volumes, temp credentials, and checkpoint. Show the destructive scope and obtain explicit confirmation. Then remove only those verified resources; never prune Docker globally, remove repository data, or clean a mismatched/uncertain target. Preserve the receipt/report as requested.
 
@@ -89,7 +89,7 @@ Keep the instance, volumes, keys, and ledger until the user explicitly requests 
 
 Report only verified facts and distinguish planned, completed, and paused work. Include:
 
-- Verified Web URL, loopback host/HTTP port, SSH host/port, and manual Become/account step.
+- Verified Web URL, loopback host/HTTP port, SSH host/port, account setup authorization and UI evidence, verified admin/automation identities, and key registration/validity/persistence state.
 - Image tag/digest and Docker/jj versions; project, branch, base SHA, exact revset and closure.
 - Actual Gerrit change URLs, Change-Ids, patch sets, checks, feedback/reply status, and unresolved items.
 - Polling interval/budget and whether paused or explicitly approved; never imply silence is approval.
@@ -99,8 +99,9 @@ Report only verified facts and distinguish planned, completed, and paused work. 
 Example response shape (all angle-bracket values are placeholders, not verified endpoints):
 
 ```text
-Paused for browser setup. Open <verified-Web-URL>, select Become, create/use the distinct
-automation account, register its dedicated SSH public key, then reply “ready.” Instance
+Paused because browser setup is unavailable. At <verified-Web-URL>, sign in using the
+authorized account flow, verify the intended administrator, create/use the distinct
+automation account, and register its dedicated SSH public key; then reply “ready.” Instance
 and volumes remain running. Resume only after that reply; checkpoint: <absolute-path>.
 After resuming, polling runs for at most 5 minutes at 15-second intervals, then pauses.
 ```
