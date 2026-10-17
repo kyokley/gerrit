@@ -35,7 +35,7 @@
   # https://devenv.sh/basics/
   enterShell = ''
     hello
-    echo "we made some changes"
+    echo "Sherie told me to change this"
   '';
 
   # https://devenv.sh/tasks/
