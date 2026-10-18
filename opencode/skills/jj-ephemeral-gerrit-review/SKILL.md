@@ -116,6 +116,7 @@ Resume invocation template (not a shell command): “Resume the review from chec
 
 - Detailed isolated Docker, REST, auth, and endpoint recipe: [references/docker-and-api.md](references/docker-and-api.md)
 - Streamlined dependency-ordered preflight, consolidated authorization checklist, and browser/UI route: [references/streamlined-setup.md](references/streamlined-setup.md)
+- macOS Docker Desktop, headed Brave/CDP, initialization provenance, and v3.14.4 session lessons: [references/macos-setup.md](references/macos-setup.md)
 - Existing local workflow safeguards: `opencode/skills/jj-gerrit-workflow/SKILL.md`
 - Jujutsu Gerrit: https://docs.jj-vcs.dev/latest/gerrit/
 - Gerrit image: https://hub.docker.com/r/gerritcodereview/gerrit
