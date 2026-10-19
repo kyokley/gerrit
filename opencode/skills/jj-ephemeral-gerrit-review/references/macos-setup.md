@@ -1,8 +1,8 @@
 # macOS local Gerrit setup notes
 
-Platform-specific supplement to the [streamlined setup](streamlined-setup.md) and [Docker/API recipe](docker-and-api.md). This records observed macOS Docker Desktop, Brave, and Gerrit 3.14.4 behavior. Treat each versioned observation as a reason to verify live state, not as a universal default. This reference does not expand the authorization scope in the main skill.
+Platform-specific supplement to the [streamlined setup](streamlined-setup.md) and [Docker/API recipe](docker-and-api.md). This records observed macOS Docker Desktop, Brave, and Gerrit 3.14.4 behavior. Treat each versioned observation as a reason to verify live state, not as a universal default. The invocation and default-setup contract is in the main skill; this historical reference neither starts a run nor broadens that scope.
 
-Use the canonical `opencode/` tree. Do not create a `.opencode` symlink, install tools, or change shell, Docker, browser, Jujutsu, or repository configuration as an implicit setup step.
+Use the canonical `opencode/` tree. A documentation-only request has no live side effects. An explicit run request authorizes a fresh per-run browser profile and bounded Gerrit setup, but not tool installation, shell/system/browser preference changes, Docker-context changes, or Jujutsu repository configuration edits. A named Jujutsu remote remains a separately approved write unless that exact mapping is explicitly included.
 
 ## 1. Docker Desktop and host locality
 
@@ -72,7 +72,7 @@ On Gerrit 3.14.4, token UI preflight must compare the exact label and finite lif
 
 The one-time token must move directly from the active rendered modal to Node process memory and then to a new exclusive `0600` file in a `0700` directory. Gerrit 3.14.4's observed modal is a rendered `dialog` with ID `generatedAuthTokenModal` and a token display section `#generatedAuthTokenDisplay`; the secret was present as rendered text rather than a visible native text field. These selectors are version-specific observations, not universal selectors. Locate the active modal using non-secret structural metadata; extract only the one token candidate inside that exact display section. Do not dump modal text/DOM or return token-bearing CDP results to a tool. Verify file mode/nonempty state, then close the modal. Record only the label, finite lifetime/expiry, path/permissions, and separate UI/REST validation outcomes.
 
-If capture is uncertain, preserve the still-open modal and state. Do not navigate, reload, close, regenerate, delete, or revoke until the same already-generated token is either securely recovered under explicit recovery authorization or verified unavailable. Never silently refresh an expired token. Keep the admin token's approved finite lifetime close to bootstrap; keep the bot credential separate. Do not place token values in commands, arguments, environment, source, logs, screenshots, checkpoints, or chat.
+If capture is uncertain, preserve the still-open modal and state. Under the active run scope, recover only the same already-generated token from the still-rendered source-verified display into its prechecked secure file; this is not permission to Generate again. Do not navigate, reload, close, delete, or revoke before storage. If the one-time value is unavailable, stop and ask; never silently refresh an expired token. Keep the admin token's finite lifetime close to bootstrap and the bot credential separate. Do not place token values in commands, arguments, environment, source, logs, screenshots, checkpoints, or chat.
 
 ## 5. Gerrit groups, project access, and base seed
 
@@ -115,7 +115,7 @@ An observed native upload had no explicit local `Change-Id` trailers; native jj 
 - Mac Docker Desktop reports an arm64 daemon while the image manifest is multi-platform: pin the verified `linux/arm64` digest; do not pull an unverified tag or print full config/env values.
 - Brave exists only inside the macOS `.app` bundle while `DISPLAY` and `WAYLAND_DISPLAY` are unset: use the exact approved app-bundle executable in the native GUI session; do not install Chrome or switch headless.
 - The chooser lists `admin`, but the init receipt lacks an identity: stop duplicate creation; reconcile only safe fresh-volume/account-ref/`Create Account` timing and rendered Administrators membership.
-- Gerrit has an active one-time-token dialog but a selector finds no visible input: preserve the modal; use only a structurally located rendered display field for same-token recovery when explicitly authorized; no second Generate click.
+- Gerrit has the same run's active one-time-token dialog but an input selector finds no visible field: preserve it and use non-secret structure/source evidence to locate the rendered token display. If the value remains, recover only that same value under the active run scope; no second Generate click. If the value is lost, stop.
 - Correct AccessInput has an inherited allow for a requested permission: do not add a redundant local grant. If `check.access` rejects a label permission, inspect access rules/group membership and do not vote or broaden ACLs.
 - A seed `POST /access` returns 500: read exact project access, validate the nested `section.permissions.permission.rules` shape, and stop unless the cause is verified; never blindly retry.
 - Upload dry-run rejects a direct URL while help says it is supported: use the user-approved unique remote only after collision check; preserve `origin` and do not upload before fresh approval.
