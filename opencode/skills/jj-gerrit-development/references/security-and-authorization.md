@@ -77,14 +77,23 @@
 ## User-authorized scope and feedback actions
 
 Verify the Gerrit host, authenticated automation account, project, branch, and
-change boundaries before acting. A concrete user request to handle Gerrit review
-feedback is standing authorization for reasonable in-scope code fixes, focused
-tests, necessary rebases or splits, patchset uploads, review replies, and
-resolution of verified addressed threads during the current authorized session.
-Do not request separate approval for each such action, ordinary patchset updates,
-or changed local commit hashes caused by an in-scope fix or rebase. Honor explicit
-user restrictions, including lookup-only, read-only, or no-upload instructions;
-they narrow and never expand this standing authority.
+change boundaries before acting. A concrete user request to develop with uploads
+is standing authorization during the current authorized session for immediate
+initial uploads of completed, in-scope atomic reviewable commits, after their
+focused validation, exact diff/message review, and selection checks. Do not batch
+these uploads until feature or stack completion, or wait for broader-suite
+results or reviewer approval. Do not request separate approval for each such
+initial upload. Mutable working-copy snapshots and empty placeholder commits are
+not authorized upload triggers.
+
+A concrete user request to handle Gerrit review feedback is standing
+authorization for reasonable in-scope code fixes, focused tests, necessary
+rebases or splits, patchset uploads, review replies, and resolution of verified
+addressed threads during the current authorized session. Do not request separate
+approval for each such action, ordinary patchset updates, or changed local
+commit hashes caused by an in-scope fix or rebase. Honor explicit user
+restrictions, including lookup-only, read-only, or no-upload instructions; they
+narrow and never expand this standing authority.
 
 This standing authority does not grant permission for unrelated changes,
 projects, credential exposure, submit, merge, or administrative writes. Reviewer

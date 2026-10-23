@@ -6,6 +6,10 @@ confirmed upload. Patchsets do not reset the deadline. Review feedback may
 remain queued after the minimum interval, so the final stop condition is a
 successful sweep after the deadline and no unhandled feedback.
 
+Once an upload is confirmed, development may continue without waiting for
+review. Monitor every uploaded change alongside ongoing development while the
+active agent maintains the foreground ownership and coverage requirements below.
+
 ## Ownership and capability gate
 
 The active agent owns the foreground workflow and remains engaged through the
