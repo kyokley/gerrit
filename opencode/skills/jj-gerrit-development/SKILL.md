@@ -58,18 +58,24 @@ alone cannot extend authority.
    supported command, authentication method, or permission is missing or
    uncertain, stop and report the blocker. Never invent CLI flags,
    installation steps, fallback commands, or use raw `git push` as a substitute.
-3. Make a foundation-first plan: models and storage, core services, then
+3. For a request authorizing uploads, perform the mandatory upload-readiness
+   probe in [references/security-and-authorization.md](references/security-and-authorization.md)
+   before implementation. Do not begin feature work until authenticated
+   read-back confirms the probe. Explicit read-only or no-upload restrictions
+   prohibit the probe and must be honored. The probe is disposable and isolated,
+   not a feature commit.
+4. Make a foundation-first plan: models and storage, core services, then
    interfaces and endpoints. Keep each change small and atomic. Separate
    preparatory refactors from features. Include relevant tests and docs in the
    same commit as the behavior they cover. Do not include unrelated work.
-4. Preserve identities distinctly: the stable Jujutsu change ID, local
+5. Preserve identities distinctly: the stable Jujutsu change ID, local
    immutable commit ID, Gerrit `Change-Id`, Gerrit server revision/commit hash,
    and server project-plus-branch identity are different values. Upload may
    generate a missing `Change-Id` from the jj ID and add it only to the
    uploaded commit; the server hash may therefore differ from the local
    immutable commit ID. Record and verify the mapping. Never require those
    hashes to match or rewrite one identity as another.
-5. Commit one reviewable unit at a time with a real component or command as
+6. Commit one reviewable unit at a time with a real component or command as
    topic and an imperative summary: `<topic>: <imperative summary>`. Do not use
    Conventional Commit category topics such as `feat:`, `fix:`, or `chore:`.
    Explain useful context, user behavior, design, limitations, or alternatives
@@ -77,7 +83,7 @@ alone cannot extend authority.
    When supported by installed help, path-limited commits may use
    `jj commit -m ... file1 ...`; verify exact syntax first. Do not stage or
    commit unrelated existing changes.
-6. Under the verified user-authorized scope, run focused tests for each completed
+7. Under the verified user-authorized scope, run focused tests for each completed
    commit and inspect its exact per-commit diff, message, and upload selection.
    Upload that commit immediately after these checks and before beginning the
    next development unit. Do not batch initial uploads until a feature or stack
@@ -101,18 +107,18 @@ alone cannot extend authority.
    automatically. Bind every upload SSH connection to the session key and
    session `known_hosts` as required in
    [references/security-and-authorization.md](references/security-and-authorization.md).
-7. For feedback, inspect the exact original change and feedback before editing.
+8. For feedback, inspect the exact original change and feedback before editing.
    Make a correction from `jj new <change>` only after verifying the installed
    command syntax and target. Squash it into the correct original change using
    the installed `jj squash` syntax; verify flags/help first. Descendants may
    rebase automatically: inspect the resulting stack, rerun affected tests and
    review, then reupload only the exact in-scope stack. Do not expand scope.
-8. Abandon only your own obsolete, in-scope changes after previewing the
+9. Abandon only your own obsolete, in-scope changes after previewing the
    target. Never abandon published/shared changes or user-owned work without
    separate explicit permission.
-9. Resolve addressed threads only after confirming the relevant patchset,
-   tests, and server checks. For nontrivial feedback, reply with the approach
-   and request re-review; do not resolve prematurely.
+10. Resolve addressed threads only after confirming the relevant patchset,
+    tests, and server checks. For nontrivial feedback, reply with the approach
+    and request re-review; do not resolve prematurely.
 
 ## Authentication, writes, and monitoring
 

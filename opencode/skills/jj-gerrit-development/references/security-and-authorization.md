@@ -77,13 +77,50 @@
   Never revoke the HTTP token or a shared credential. If manual key removal is
   not confirmed, report cleanup as pending; do not claim revocation.
 
+## Mandatory pre-implementation upload probe
+
+For a user request to develop with uploads, complete this one-time readiness
+probe after repository, installed-command, authentication, transport, identity,
+project, and destination-branch checks, but before any feature implementation.
+That request's standing authorization includes this single scoped probe; editing
+or updating this skill does not authorize a runtime probe. Explicit read-only or
+no-upload restrictions prohibit it and must be honored.
+
+- From the verified destination-branch base, create one clearly labelled,
+  disposable test commit with minimal harmless, nonsecret content. It must be
+  non-empty, contain no feature or user changes, remain outside the feature
+  stack, and never be an ancestor of feature commits. Verify this isolation
+  without disturbing existing user work.
+- Inspect its exact diff, message, and upload selection. Run the installed
+  command's dry-run and verify the preview selects only this probe for the
+  verified project and branch. Then upload it through the same verified,
+  session-bound SSH transport intended for feature changes. A dry-run or SSH
+  greeting alone does not prove upload readiness.
+- Using authenticated HTTP(S) API access as the intended account, read back the
+  newly created Gerrit change. Verify the intended account, project, branch,
+  patchset and probe content, and mapping among jj change ID, local immutable
+  commit ID, Gerrit `Change-Id`, server change, and server revision hash. Record
+  the safe change URL, nonsecret IDs, and confirmed result in the checkpoint.
+- Fail closed on rejected, unknown, or wrong-scope outcomes. Reconcile an
+  ambiguous result through authenticated read-back before any retry. Do not
+  begin implementation until successful upload and read-back are confirmed.
+  This verifies authenticated API access and review upload for the tested
+  destination and transport only; it does not prove submit/merge privileges,
+  other server settings, or CI readiness. Do not wait for reviewer approval or
+  the monitoring deadline before beginning feature development.
+- Record probe cleanup as pending. Do not automatically reupload the probe with
+  feature changes or abandon it. Abandon only this exact published test change
+  after separate explicit user permission; never abandon other or shared work.
+  Never submit, merge, or change server configuration as part of the probe.
+
 ## User-authorized scope and feedback actions
 
 Verify the Gerrit host, authenticated automation account, project, branch, and
 change boundaries before acting. A concrete user request to develop with uploads
-is standing authorization during the current authorized session for immediate
-initial uploads of completed, in-scope atomic reviewable commits, after their
-focused validation, exact diff/message review, and selection checks. Do not batch
+is standing authorization during the current authorized session for the single
+scoped pre-implementation probe above and immediate initial uploads of completed,
+in-scope atomic reviewable commits, after their focused validation, exact
+diff/message review, and selection checks. Do not batch
 these uploads until feature or stack completion, or wait for broader-suite
 results or reviewer approval. Do not request separate approval for each such
 initial upload. Mutable working-copy snapshots and empty placeholder commits are

@@ -1,10 +1,11 @@
 # Foreground feedback monitoring
 
-Monitoring begins at the first server-confirmed upload, not at local commit or
-an attempted upload. Track a deadline at least 12 hours after that first
-confirmed upload. Patchsets do not reset the deadline. Review feedback may
-remain queued after the minimum interval, so the final stop condition is a
-successful sweep after the deadline and no unhandled feedback.
+Monitoring begins at the first server-confirmed upload, including the mandatory
+pre-implementation readiness probe, not at local commit or an attempted upload.
+Track a deadline at least 12 hours after that first confirmed upload. Patchsets
+do not reset the deadline. Review feedback may remain queued after the minimum
+interval, so the final stop condition is a successful sweep after the deadline
+and no unhandled feedback. The deadline does not delay feature implementation.
 
 Once an upload is confirmed, development may continue without waiting for
 review. Monitor every uploaded change alongside ongoing development while the
