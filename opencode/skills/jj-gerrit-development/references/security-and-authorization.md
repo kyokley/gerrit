@@ -2,8 +2,11 @@
 
 ## Runtime credential setup
 
-- Use HTTPS with TLS verification enabled and HTTP Basic authentication with
-  the protected HTTP token. Do not forward credentials across redirects. A
+- Accept HTTP or HTTPS for the user-provided Gerrit base URL. Prefer HTTPS and
+  keep TLS verification enabled when using it; do not reject an HTTP URL solely
+  for lacking TLS. HTTP Basic authentication sends credentials without transport
+  encryption over HTTP; warn the user of this risk. Use HTTP Basic authentication
+  with the protected HTTP token. Do not forward credentials across redirects. A
   browser login/session is not REST API authentication.
 - The token must already exist in a regular file owned by the runtime user and
   readable only by that user. Keep it outside the repository. Do not print,
@@ -12,8 +15,8 @@
   to paste it. If permissions or file type are unsafe, stop and request secure
   correction; do not alter or replace the token.
 - Verify authenticated identity through `/a/accounts/self/detail` and compare
-  it with the requested automation account. Verify that HTTPS and SSH resolve
-  to the same intended account
+  it with the requested automation account. Verify that the HTTP(S) API and SSH
+  resolve to the same intended account
   before any write. Use the actual installed client/API instructions; do not
   assume endpoint or option details. No documented Gerrit `whoami` command is
   established here; a greeting or version string does not prove account identity.

@@ -21,7 +21,7 @@ it does not authorize unrelated changes or privileged Gerrit operations.
 
 Before setup or network activity, ask for any missing or vague runtime values:
 
-- HTTP base URL, including port and context path.
+- HTTP or HTTPS base URL, including port and context path.
 - SSH host and port.
 - Automation username.
 - Gerrit project and target branch.
