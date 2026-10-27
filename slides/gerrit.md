@@ -1,6 +1,6 @@
 ---
 slides:
-    title: AGILE Code Reviews
+    title: Agile Code Reviews
     separator_vertical: ^\s*-v-\s*$
 revealjs:
     viewDistance: 2
@@ -14,8 +14,28 @@ plugins:
 
 ---
 
+## What?
+> Agile development is an iterative approach to software development emphasizing flexibility, customer collaboration, and rapid delivery of functional software
+
+Notes:
+Agile development is an iterative approach to software development emphasizing flexibility, customer collaboration, and rapid delivery of functional software. Agile methodologies, such as Scrum and Kanban, encourage adaptive planning, frequent reassessment of project goals, and regular feedback loops to refine the software continuously.
+
+---
+
+Cool but what about Agile *Code Reviews*?
+
+---
+
+## Code Reviews done Agilely
+> Integrating code reviews into Agile workflows enhances software quality and accelerates learning among team members
+
+Notes:
+Integrating code reviews into Agile workflows enhances software quality and accelerates learning among team members. Agile code review practices help teams maintain high-quality codebases, reduce technical debt, and respond swiftly to changing requirements.
+
+---
+
 ## Task
-Implement code review tool based on Python, Django, and Nitro
+Implement new tool based on Python, Django, and Nitro
 
 ---
 
@@ -52,7 +72,7 @@ Requested to refactor a couple of methods
 ---
 
 ## re: Clarification & Upgrade
-<video data-src="./gerrit.mp4#t=00:18:54,00:19:50" controls="true" onloadedmetadata="this.playbackRate = 1.0"></video>
+<video data-src="./gerrit.mp4#t=00:18:54,00:19:50" controls="true" onloadedmetadata="this.playbackRate = 3.0"></video>
 
 Notes:
 Clarification requested on Django version
@@ -68,6 +88,22 @@ Notes:
 Requested upgrade to Django 6
 
 ---
+
+## Pause
+
+---
+
+## What is happening???
+- Migrate Django 5 -> Django 6
+- Refactor jj module
+- Ongoing development
+
+Notes:
+
+Editing past, present, and future simultaneously
+
+---
+
 
 ## re: Upgrade
 <video data-src="./gerrit.mp4#t=00:39:30,00:40:12" controls="true" onloadedmetadata="this.playbackRate = 1.0"></video>
@@ -87,3 +123,8 @@ Requested to refactor a couple of methods
 
 ## Full Video
 <video data-src="./gerrit.mp4#t=00:51:45" controls="true" onloadedmetadata="this.playbackRate = 3.0"></video>
+
+---
+
+## References
+- https://graphite.com/guides/adapting-code-review-for-agile
