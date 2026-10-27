@@ -11,6 +11,7 @@ plugins:
 ---
 
 # Agile Code Reviews
+### of AI-generated code
 
 ---
 
@@ -22,15 +23,26 @@ Agile development is an iterative approach to software development emphasizing f
 
 ---
 
-Cool but what about Agile *Code Reviews*?
+Cool but what are Agile *Code Reviews*?
 
 ---
 
 ## Code Reviews done Agilely
-> Integrating code reviews into Agile workflows enhances software quality and accelerates learning among team members
+> Agile code review is a lightweight, iterative practice where developers examine small, incremental code changes to maintain quality and share knowledge without disrupting rapid development cycles
 
 Notes:
-Integrating code reviews into Agile workflows enhances software quality and accelerates learning among team members. Agile code review practices help teams maintain high-quality codebases, reduce technical debt, and respond swiftly to changing requirements.
+
+Mention potential improvements
+- Smaller code reviews
+- Earlier start
+- Earlier insights into potential design direction
+- Possibly uniquely suited for PODs
+
+We may qualify as being "Agile" but we are not doing Agile code reviews
+
+The goal should be to get feedback as early into the dev process as possible
+
+I wanted to investigate developing code and doing the review in parallel
 
 ---
 
@@ -43,6 +55,16 @@ Implement new tool based on Python, Django, and Nitro
 <video data-src="./gerrit.mp4#t=00:00:08,00:00:30" controls="true" onloadedmetadata="this.playbackRate = 1.0"></video>
 
 Notes:
+I'm using OpenCode, Jujutsu, and Gerrit
+Gerrit is on the left, Opencode is on the right
+Jujutsu is managing VCS (commits and transmission to Gerrit)
+
+Recorded hour long video of me doing development
+
+//
+
+Point out that this is the first commit of the project
+
 Commit was too big. Asked agent to split it.
 
 ---
@@ -123,6 +145,27 @@ Requested to refactor a couple of methods
 
 ## Full Video
 <video data-src="./gerrit.mp4#t=00:51:45" controls="true" onloadedmetadata="this.playbackRate = 3.0"></video>
+
+---
+
+## Sold? Now what?
+- Mutable commits
+- Interdiff provider
+- How to integrate in current processes
+
+Notes:
+
+- Mutable commits comes with the cost of education to the team
+- For the demo, I've used Gerrit but it's support is still experimental in Jujutsu
+- What does this look like in the greater SDLC?
+
+---
+
+## Conclusions
+Agile Code Reviews give us
+- Smaller code reviews
+- Earlier insights into potential design direction
+- Reduced time to deployment
 
 ---
 
