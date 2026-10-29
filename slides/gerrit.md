@@ -15,7 +15,17 @@ plugins:
 
 ---
 
-## What?
+> Developers Now Spend 80% of Week Reviewing AI Code
+
+-- [Tech Insider](https://tech-insider.org/ai-code-review-developers-bairesdev-dev-barometer-2026/)
+
+Notes:
+
+80% of developers now spend less than half their work week producing new code from scratch, while the share who say artificial intelligence writes at least half of their code has more than tripled in a single year, climbing from 12% to 42%. The findings, drawn from nearshore development firm BairesDev’s Q3 2026 Dev Barometer survey, mark one of the clearest signals yet that the job of “software engineer” is being redefined around reviewing, testing, and approving AI output rather than typing it line by line.
+
+---
+
+## Agile Methodology
 > Agile development is an iterative approach to software development emphasizing flexibility, customer collaboration, and rapid delivery of functional software
 
 Notes:
@@ -46,16 +56,33 @@ I wanted to investigate developing code and doing the review in parallel
 
 ---
 
-## Task
-Implement new tool based on Python, Django, and Nitro
+## Scope
+This is NOT:
+- an Agent for Code Review
+- a testing solution
+- "easy"
+
+Notes:
+
+- This is not a presentation on AI
+- Don't ask about testing or deployments
+- Don't even necessarily consider the tooling
 
 ---
 
 ## Scope
-This is NOT
-- an Agent for Code Review
-- a testing solution
-- "easy"
+This IS:
+- Mutable commits
+- Stacked PRs
+- Interdiff Code Reviews
+- Reduced burden on human code reviewers
+
+*...hopefully*
+
+---
+
+## Task
+Implement new tool based on Python, Django, and Nitro
 
 ---
 
@@ -156,27 +183,15 @@ Requested to refactor a couple of methods
 
 ---
 
-## Why should we care?
-
----
-
-## Sold? Now what?
-- Mutable commits
-- Interdiff provider
-- How to integrate in current processes
-
-Notes:
-
-- Mutable commits comes with the cost of education to the team
-- For the demo, I've used Gerrit but it's support is still experimental in Jujutsu
-- What does this look like in the greater SDLC?
+## Does any of this matter?
+- [Maybe?](./report.html)
 
 ---
 
 ## Conclusions
 Agile Code Reviews give us
 - Smaller code reviews
-- Earlier insights into potential design direction
+- Earlier insights into potential design issues
 - Reduced time to deployment
 
 ---
@@ -185,3 +200,4 @@ Agile Code Reviews give us
 - https://graphite.com/guides/adapting-code-review-for-agile
 - https://www.propelcode.ai/blog/pr-size-impact-code-review-quality-data-study
 - https://hackernoon.com/ai-generated-code-overwhelms-human-reviewers-strategies-to-streamline-code-review-process
+- https://github.com/kyokley/code-review-sim/tree/main
