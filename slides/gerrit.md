@@ -51,6 +51,14 @@ Implement new tool based on Python, Django, and Nitro
 
 ---
 
+## Scope
+This is NOT
+- an Agent for Code Review
+- a testing solution
+- "easy"
+
+---
+
 ## Split a commit
 <video data-src="./gerrit.mp4#t=00:00:08,00:00:30" controls="true" onloadedmetadata="this.playbackRate = 1.0"></video>
 
@@ -148,6 +156,10 @@ Requested to refactor a couple of methods
 
 ---
 
+## Why should we care?
+
+---
+
 ## Sold? Now what?
 - Mutable commits
 - Interdiff provider
@@ -171,3 +183,5 @@ Agile Code Reviews give us
 
 ## References
 - https://graphite.com/guides/adapting-code-review-for-agile
+- https://www.propelcode.ai/blog/pr-size-impact-code-review-quality-data-study
+- https://hackernoon.com/ai-generated-code-overwhelms-human-reviewers-strategies-to-streamline-code-review-process
