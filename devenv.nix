@@ -43,7 +43,6 @@
   # https://devenv.sh/basics/
   enterShell = ''
     hello
-    echo "we made some changes"
   '';
 
   # https://devenv.sh/tasks/
