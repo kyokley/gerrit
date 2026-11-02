@@ -48,6 +48,17 @@ session restart, a new explicit feedback-handling request may establish fresh
 scoped authority after identity and destination are verified; a checkpoint
 alone cannot extend authority.
 
+## Mandatory per-commit upload gate
+
+When uploads are authorized, upload each completed, atomic, reviewable commit
+as soon as its focused tests and exact diff, message, and upload-selection
+checks pass. Do not begin the next development unit, wait for feature/pass/stack
+completion, or hand off completed commits as local-only work. Confirm each
+upload through authenticated server read-back before continuing. If upload is
+blocked, stop and report the blocker and every completed but unuploaded commit.
+Uploading for review never authorizes submission or merging, and this gate
+does not override an explicit read-only or no-upload restriction.
+
 ## Required development workflow
 
 1. Inspect repository state and instructions read-only. Identify existing
