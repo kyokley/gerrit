@@ -15,16 +15,6 @@ plugins:
 
 ---
 
-> Developers Now Spend 80% of Week Reviewing AI Code
-
--- [Tech Insider](https://tech-insider.org/ai-code-review-developers-bairesdev-dev-barometer-2026/)
-
-Notes:
-
-80% of developers now spend less than half their work week producing new code from scratch, while the share who say artificial intelligence writes at least half of their code has more than tripled in a single year, climbing from 12% to 42%. The findings, drawn from nearshore development firm BairesDev’s Q3 2026 Dev Barometer survey, mark one of the clearest signals yet that the job of “software engineer” is being redefined around reviewing, testing, and approving AI output rather than typing it line by line.
-
----
-
 ## Agile Methodology
 > Agile development is an iterative approach to software development emphasizing flexibility, customer collaboration, and rapid delivery of functional software
 
@@ -59,23 +49,24 @@ I wanted to investigate developing code and doing the review in parallel
 ## Scope
 This is NOT:
 - an Agent for Code Review
-- a testing solution
-- "easy"
+- a Testing Solution
+- "Easy"
 
 Notes:
 
 - This is not a presentation on AI
 - Don't ask about testing or deployments
 - Don't even necessarily consider the tooling
+- This will require infrastructure and education
 
 ---
 
 ## Scope
 This IS:
-- Mutable commits
+- Mutable Commits
 - Stacked PRs
 - Interdiff Code Reviews
-- Reduced burden on human code reviewers
+- Reduced Burden on Human Code Reviewers
 
 *...hopefully*
 
@@ -136,14 +127,6 @@ Clarification requested on Django version
 
 Requested upgrade to Django 6
 
--v-
-
-## Upgrade
-<video data-src="./gerrit-clips/upgrade.mp4" controls="true" onloadedmetadata="this.playbackRate = 1.0"></video>
-
-Notes:
-Requested upgrade to Django 6
-
 ---
 
 ## Pause
@@ -175,11 +158,6 @@ Requested upgrade to Django 6
 
 Notes:
 Requested to refactor a couple of methods
-
--v-
-
-## Full Video
-<video data-src="./gerrit-clips/full-video.mp4" controls="true" onloadedmetadata="this.playbackRate = 3.0"></video>
 
 ---
 
