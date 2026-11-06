@@ -1,9 +1,10 @@
 ---
 name: jj-gerrit-development
 description: >
-  Develop and review a project using Jujutsu (jj) and Gerrit with explicitly
-  authorized, incremental uploads and foreground feedback monitoring. Trigger for
-  requests to build or maintain a Gerrit review workflow from a jj repository.
+  Develop and review a project using Jujutsu (jj) and Gerrit, defaulting to
+  immediate incremental review uploads, server connection checks, workspace
+  setup, and foreground feedback monitoring. Trigger for requests to build or
+  maintain a Gerrit review workflow from a jj repository.
   Do not trigger for generic Git/Jujutsu help, documentation-only work unrelated
   to this workflow, or provisioning an ephemeral Gerrit server.
 ---
@@ -13,9 +14,12 @@ description: >
 Use this skill only for the requested project workflow. Follow repository
 instructions and preserve unrelated user work. Do not stage, commit, upload,
 or contact Gerrit unless the action is within the user's request and verified
-authorization scope. A request to handle feedback, or develop with uploads,
-authorizes only the corresponding reasonable, in-scope actions described below;
-it does not authorize unrelated changes or privileged Gerrit operations.
+authorization scope. A request to implement or develop using this skill includes
+the in-scope review uploads and isolated readiness probe described below, unless
+the user explicitly limits the work to local-only, no-upload, or read-only
+actions. A request to handle feedback authorizes only the corresponding
+reasonable, in-scope actions. Neither request authorizes unrelated changes or
+privileged Gerrit operations.
 
 ## Intake and authorization
 
@@ -25,17 +29,23 @@ Before setup or network activity, ask for any missing or vague runtime values:
 - SSH host and port.
 - Automation username.
 - Gerrit project and target branch.
-- Protected HTTP token-file path outside the repository. Never ask for or echo
-  the token itself in chat.
-- Change boundaries and intended upload/reply/resolve actions.
+- HTTP credential provider: an existing Secretspec configuration (identify its
+  spec file and profile; token environment variable defaults to `GERRIT_TOKEN`),
+  or a protected HTTP token-file path outside the repository. Prefer the
+  identified existing Secretspec provider; do not require a separate token file
+  in Secretspec mode. Never ask for or echo the token itself in chat.
+- Change boundaries and any explicit upload restrictions or requested
+  reply/resolve actions.
 - Foreground monitoring owner, deadline, and any explicit handoff or pause
   boundary.
 
 Verify the Gerrit host, authenticated account, project, branch, change
 boundaries, and applicable user-authorized scope before acting. A concrete user
-request to develop with uploads is standing authorization in the current
-session for initial uploads of completed, in-scope reviewable commits after the
-checks below. A request to handle review feedback is standing authorization for
+request to implement or develop using this skill is standing authorization in
+the current session for the mandatory isolated readiness probe and immediate
+uploads of completed, in-scope reviewable commits after the checks below. Do not
+ask the user to opt in to uploads or approve each commit. A request to handle
+review feedback is standing authorization for
 reasonable in-scope code fixes, tests, necessary rebases or splits, patchset
 uploads, review replies, and resolution of verified addressed threads. Do not
 ask for separate approval for each authorized action or ordinary changed commit
@@ -47,6 +57,10 @@ permits submit, merge, administrative writes, credential exposure, or unrelated 
 session restart, a new explicit feedback-handling request may establish fresh
 scoped authority after identity and destination are verified; a checkpoint
 alone cannot extend authority.
+
+Reuse already supplied destination and credential-provider details; do not ask
+for a blanket upload confirmation. Ask only for genuinely missing or ambiguous
+facts or required manual credential setup, not permission to upload.
 
 ## Mandatory per-commit upload gate
 
@@ -62,14 +76,18 @@ does not override an explicit read-only or no-upload restriction.
 ## Required development workflow
 
 1. Inspect repository state and instructions read-only. Identify existing
-   changes and protect them. Describe the intended changes before editing.
+   changes and protect them. For the matching project only, consult its scoped
+   profile in [references/service-manager-setup.md](references/service-manager-setup.md);
+   re-resolve all workspace names, revsets, and IDs before acting. Describe the
+   intended changes before editing.
 2. Inspect installed `jj` and Gerrit extension versions and their actual help.
    `jj` 0.46.0 has `jj gerrit upload`, but installations differ; confirm the
    command and exact options before relying on them. If a prerequisite,
    supported command, authentication method, or permission is missing or
    uncertain, stop and report the blocker. Never invent CLI flags,
    installation steps, fallback commands, or use raw `git push` as a substitute.
-3. For a request authorizing uploads, perform the mandatory upload-readiness
+3. For an implementation/development request under the default upload scope,
+   perform the mandatory upload-readiness
    probe in [references/security-and-authorization.md](references/security-and-authorization.md)
    before implementation. Do not begin feature work until authenticated
    read-back confirms the probe. Explicit read-only or no-upload restrictions
@@ -95,7 +113,11 @@ does not override an explicit read-only or no-upload restriction.
    `jj commit -m ... file1 ...`; verify exact syntax first. Do not stage or
    commit unrelated existing changes.
 7. Under the verified user-authorized scope, run focused tests for each completed
-   commit and inspect its exact per-commit diff, message, and upload selection.
+    commit and inspect its exact per-commit diff, message, and upload selection.
+    Before every upload, run the installed command's dry-run and verify its
+    preview matches only the intended commits, project, and branch. Passing
+    focused tests and this dry-run check remain upload prerequisites; neither
+    requires a user approval prompt.
    Upload that commit immediately after these checks and before beginning the
    next development unit. Do not batch initial uploads until a feature or stack
    is complete, or wait for the broader suite or reviewer approval. Mutable jj
@@ -115,8 +137,9 @@ does not override an explicit read-only or no-upload restriction.
    push options unless separately approved; never auto-merge. Confirm and
    reconcile each server result. Every commit remains an individually reviewed
    change. Manually squash fixups; do not assume Gerrit will squash them
-   automatically. Bind every upload SSH connection to the session key and
-   session `known_hosts` as required in
+   automatically. Bind every upload SSH connection to the verified selected
+   session key or explicitly user-designated managed key, and pinned
+   session/workspace `known_hosts`, with no identity fallback, as required in
    [references/security-and-authorization.md](references/security-and-authorization.md).
 8. For feedback, inspect the exact original change and feedback before editing.
    Make a correction from `jj new <change>` only after verifying the installed
@@ -135,15 +158,26 @@ does not override an explicit read-only or no-upload restriction.
 
 Follow [references/security-and-authorization.md](references/security-and-authorization.md)
 for credential handling and write boundaries. Follow
+[references/service-manager-setup.md](references/service-manager-setup.md) only
+when the requested repository is `service-manager-modernization-spec`; it is a
+project profile, not a default for other repositories. Follow
 [references/monitoring.md](references/monitoring.md) before claiming monitoring
 or completion. These are required constraints, not optional examples.
 
-The active agent owns foreground monitoring: poll Gerrit live, remain engaged
+Always use a foreground polling monitor for every commit uploaded to Gerrit for
+review, starting with the first server-confirmed upload, including the readiness
+probe. Here, "submitted commits" means commits uploaded for review; it never
+authorizes Gerrit submission or merging. Update the monitored change/revision set
+after every upload. The active agent must inspect published comments, messages,
+and checks and address actionable feedback within the verified authorization
+scope: make fixes, run tests, upload corrected patchsets, reply, and resolve only
+verified addressed threads. Read-only collection alone is not comment handling.
+The active agent owns the foreground polling monitor: poll Gerrit live, remain engaged
 through the fixed deadline and successful final sweep, and handle or explicitly
 hand off feedback under the verified user-authorized scope. A delegated subagent may do
 bounded read-only polling only when awaited; the active agent retains ownership
 and must receive its result. Never fire-and-forget or promise autonomous follow-up
-after the turn ends. A background service, timer, or scheduler does not replace
+after the turn ends. A one-off status check, background service, timer, or scheduler does not replace
 foreground ownership and is not a prerequisite. When asked to check for feedback
 or given new feedback, query the verified Gerrit instance immediately; do not
 wait for the next interval or treat cached monitor state as evidence of absence.

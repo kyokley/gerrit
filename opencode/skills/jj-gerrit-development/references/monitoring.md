@@ -13,6 +13,15 @@ active agent maintains the foreground ownership and coverage requirements below.
 
 ## Ownership and capability gate
 
+Always run a foreground polling monitor for every uploaded review commit, not
+only when the user separately asks for monitoring. Verify that its polling loop
+is running and its authenticated live sweep succeeds before claiming coverage.
+Keep all uploaded changes and current patchsets in its monitored set. The active
+agent must consume its findings and address comments within the authorized scope;
+merely collecting comments or recording pending IDs does not address them.
+Background polling, when separately requested, is supplemental and never proves
+that foreground polling or feedback handling continued during a pause.
+
 The active agent owns the foreground workflow and remains engaged through the
 fixed deadline, successful final sweep, and disposition of feedback. Before
 upload, establish an explicit foreground owner, checkpoint, and stop/restart
