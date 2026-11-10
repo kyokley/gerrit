@@ -12,3 +12,5 @@ devenv.local.yaml
 etc/*
 
 .opencode
+
+*.png

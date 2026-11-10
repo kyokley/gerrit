@@ -72,27 +72,10 @@ This IS:
 
 ---
 
-## Proposed workflow: stacked reviews
-
-<div class="mermaid">
-<pre>
-flowchart LR
-    A[Agent user works on feature] --> B[Build stacked commits / interdiff revisions]
-    B --> C[Push commits to Jujutsu server in batches]
-    C --> D[Jujutsu review: each commit needs approvals]
-    U[Approver user group] -->|At least 2 distinct approvers per commit| D
-    D --> E{Top commit changes?}
-    E -->|Yes| F[Force-push entire stack to Git server]
-    F --> G[CI pipeline: run tests]
-    F --> H[Check Jujutsu approvals for every source-stack commit]
-    H --> I{Every commit has at least 2 distinct approvers?}
-    G --> J[Report checks; gate success]
-    I --> J
-</pre>
-</div>
+<img src="./gerrit-workflow.png" alt="Proposed workflow showing an agent developing and batch-pushing stacked commits while reviewers approve incremental commits in parallel; reviewer feedback and build pass/fail results inform subsequent agent work over time. Each commit needs at least two distinct approvers, and each stack-tip change mirrors the full stack to Git for CI tests and approval checks." style="display: block; width: 100%; max-height: 78vh; object-fit: contain; margin: 0 auto;">
 
 Notes:
-This is a proposed workflow, not a claim about built-in tooling. Each top-of-stack change triggers a force-push of the entire stack to Git. The approval check queries the corresponding source revisions for every commit in that pushed stack; approvals do not block mirroring, but the checks gate success.
+This is a proposed workflow, not a claim about built-in tooling. Agent feature development and incremental review happen in parallel as stacked commits or interdiff revisions are published to Jujutsu in batches. Reviewer feedback and build pass/fail results feed into subsequent agent work throughout development: the agent addresses comments, fixes failed builds, and continues iterating. Each commit needs approvals from at least two distinct users in the approver group. Every stack-tip change triggers a force-push of the entire stack to Git, even when some approvals are pending. The Git push triggers CI tests and an approval check against the corresponding source revision of every commit in that stack; both checks gate success.
 
 ---
 
