@@ -72,6 +72,30 @@ This IS:
 
 ---
 
+## Proposed workflow: stacked reviews
+
+<div class="mermaid">
+<pre>
+flowchart LR
+    A[Agent user works on feature] --> B[Build stacked commits / interdiff revisions]
+    B --> C[Push commits to Jujutsu server in batches]
+    C --> D[Jujutsu review: each commit needs approvals]
+    U[Approver user group] -->|At least 2 distinct approvers per commit| D
+    D --> E{Top commit changes?}
+    E -->|Yes| F[Force-push entire stack to Git server]
+    F --> G[CI pipeline: run tests]
+    F --> H[Check Jujutsu approvals for every source-stack commit]
+    H --> I{Every commit has at least 2 distinct approvers?}
+    G --> J[Report checks; gate success]
+    I --> J
+</pre>
+</div>
+
+Notes:
+This is a proposed workflow, not a claim about built-in tooling. Each top-of-stack change triggers a force-push of the entire stack to Git. The approval check queries the corresponding source revisions for every commit in that pushed stack; approvals do not block mirroring, but the checks gate success.
+
+---
+
 ## Task
 Implement new tool based on Python, Django, and Nitro
 
