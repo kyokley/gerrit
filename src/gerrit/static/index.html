@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Relay — agent workbench</title>
+  <link rel="stylesheet" href="/app.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="Relay workbench home"><span class="brand-mark">R</span><span>relay<span class="brand-dot">.</span></span></a>
+    <div class="top-meta"><span class="live-indicator" id="connection-dot"></span><span id="connection-label">Connecting</span><span class="top-divider"></span><span id="parallel-count">— / — slots</span></div>
+    <button class="icon-button settings-trigger" id="open-settings" type="button" aria-label="Open settings" title="Settings">⚙</button>
+  </header>
+  <main class="shell">
+    <section class="intro">
+      <div><p class="eyebrow">LOCAL AGENT CONTROL ROOM <span class="eyebrow-line"></span></p><h1>Make room for<br><em>good work.</em></h1></div>
+      <p class="intro-copy">Independent workspaces. A clear trail from task to review. You decide what ships.</p>
+    </section>
+    <section class="workspace-layout" aria-label="Agent workspace">
+      <aside class="task-rail">
+        <div class="section-heading"><div><span class="section-index">01</span><h2>Work queue</h2></div><span class="count-pill" id="task-count">0</span></div>
+        <div class="task-list" id="task-list"><div class="empty-queue"><span class="empty-glyph">◌</span><strong>Nothing in motion</strong><span>Start a task to open an isolated workspace.</span></div></div>
+        <form id="task-form" class="composer">
+          <label for="task-title">A task worth doing</label>
+          <textarea id="task-title" name="title" rows="3" maxlength="500" required placeholder="Describe one focused change…"></textarea>
+          <div class="composer-foot"><span>Small units · continuous review</span><button class="primary-button" type="submit">Start task <span aria-hidden="true">↗</span></button></div>
+          <p class="form-error" id="task-error" role="alert" hidden></p>
+        </form>
+      </aside>
+      <section class="detail-pane" aria-label="Selected task details">
+        <div id="detail-empty" class="detail-empty"><div class="empty-orbit"><span>↗</span></div><p class="eyebrow">YOUR WORK, IN VIEW</p><h2>Every task gets<br>a space of its own.</h2><p>Choose a task from the queue to follow its progress, event trail, and Gerrit review chain.</p></div>
+        <div id="task-detail" hidden>
+          <div class="detail-header"><div><p class="eyebrow">TASK <span id="detail-id"></span></p><h2 id="detail-title"></h2></div><button class="stop-button" id="stop-task" type="button">Stop task</button></div>
+          <div class="status-row"><span class="state-badge" id="detail-state"></span><span class="workspace-path" id="detail-workspace"></span></div>
+          <section class="chain-card" aria-live="polite"><div class="chain-icon">↗</div><div class="chain-copy"><span class="eyebrow">GERRIT COMMIT CHAIN</span><strong id="chain-heading">Waiting for first confirmed upload</strong><span id="chain-subtitle">The review link appears here as soon as Gerrit confirms the chain.</span></div><a class="chain-link" id="chain-link" target="_blank" rel="noopener noreferrer" hidden>Open chain <span>↗</span></a></section>
+          <div class="detail-grid">
+            <section class="info-card"><div class="card-heading"><h3>Changes</h3><span class="count-pill" id="change-count">0</span></div><div id="changes-list" class="changes-list"><p class="muted">No confirmed changes yet.</p></div></section>
+            <section class="info-card monitor-card"><div class="card-heading"><h3>Review coverage</h3><span class="monitor-state" id="monitor-state">Not started</span></div><div class="coverage-track" aria-hidden="true"><span id="coverage-fill"></span></div><div class="monitor-stats"><div><span>Coverage</span><strong id="coverage-value">—</strong></div><div><span>Pending</span><strong id="pending-value">—</strong></div><div><span>Poll gaps</span><strong id="gaps-value">—</strong></div></div><p class="monitor-detail" id="monitor-detail" hidden></p><p class="monitor-note" id="monitor-note">Coverage begins after the first confirmed upload.</p></section>
+          </div>
+          <section class="events-section"><div class="card-heading"><div><span class="section-index">LIVE FEED</span><h3>Event trail</h3></div><span class="event-limit">Latest bounded events</span></div><div class="event-list" id="event-list"><p class="muted">Waiting for task events.</p></div></section>
+          <p class="task-error" id="detail-error" role="alert" hidden></p>
+        </div>
+      </section>
+    </section>
+  </main>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <div class="drawer-backdrop" id="drawer-backdrop" hidden></div>
+  <aside class="settings-drawer" id="settings-drawer" role="dialog" aria-modal="true" aria-labelledby="settings-title" aria-hidden="true" inert>
+    <div class="drawer-header"><div><p class="eyebrow">WORKSPACE CONFIGURATION</p><h2 id="settings-title">Settings</h2></div><button class="icon-button" id="close-settings" type="button" aria-label="Close settings">×</button></div>
+    <div class="safe-note"><strong>Credentials stay protected.</strong><span>Never paste tokens or private keys here. Enter paths to existing protected files, or configure SecretSpec to resolve them when a task starts. Saved settings never contain credential values.</span></div>
+    <form id="settings-form" class="settings-form">
+      <fieldset><legend>Repository &amp; agent</legend>
+        <label>Repository path<input name="repository" type="text" placeholder="/home/me/project" autocomplete="off"></label>
+        <label>Agent command <span class="hint">One argument per line. Use {prompt} where prompt belongs.</span><textarea name="agent_command" rows="4" spellcheck="false"></textarea></label>
+        <div class="field-pair"><label>Parallel tasks<input name="max_parallel" type="number" min="1" max="32"></label><label>Maximum units<input name="max_units" type="number" min="1" max="500"></label></div>
+        <label>Agent timeout <span class="hint">Seconds</span><input name="agent_timeout" type="number" min="1"></label>
+      </fieldset>
+      <fieldset><legend>Gerrit destination</legend>
+        <label>HTTP URL<input name="http_url" type="url" placeholder="https://gerrit.example.org"></label>
+        <div class="field-pair"><label>SSH host<input name="ssh_host" type="text"></label><label>SSH port<input name="ssh_port" type="number" min="1" max="65535"></label></div>
+        <label>Username<input name="username" type="text" autocomplete="username"></label><label>Project<input name="project" type="text"></label>
+        <label>Base branch<input name="base_branch" type="text" placeholder="main"></label><label>Trusted known_hosts path<input name="known_hosts" type="text" placeholder="/home/me/.ssh/known_hosts"></label>
+      </fieldset>
+      <fieldset><legend>Credential source</legend>
+        <label>Provider<select name="credential_mode"><option value="token-file">Protected credential files</option><option value="secretspec">SecretSpec</option></select></label>
+        <div class="credential-fields" data-mode="token-file"><label>Protected token file path<input name="token_file" type="text" autocomplete="off" placeholder="/run/secrets/gerrit-token"></label><label>SSH private key file path<input name="ssh_key_file" type="text" autocomplete="off" placeholder="/run/secrets/gerrit-key"></label><p class="hint">Paths only. Keep files outside the repository and restrict file permissions.</p></div>
+        <div class="credential-fields" data-mode="secretspec"><label>SecretSpec spec path<input name="spec_file" type="text" placeholder="/path/to/secretspec.toml"></label><div class="field-pair"><label>Profile<input name="profile" type="text" placeholder="default"></label><label>Scope<input name="scope" type="text" placeholder="gerrit"></label></div><label>Token variable<input name="token_env" type="text" placeholder="GERRIT_TOKEN"></label><label>SSH key variable<input name="ssh_key_env" type="text" placeholder="GERRIT_SSH_KEY"></label><label>Field variable map <span class="hint">JSON object: Gerrit field name to SecretSpec variable name.</span><textarea name="field_env" rows="3" spellcheck="false" placeholder='{"username":"GERRIT_USERNAME"}'></textarea></label></div>
+      </fieldset>
+      <fieldset><legend>Review monitoring</legend><label>Poll interval <span class="hint">Seconds</span><input name="poll_interval" type="number" min="1"></label><label>Monitor coverage <span class="hint">Hours · minimum 12</span><input name="monitor_hours" type="number" min="12"></label></fieldset>
+      <p class="settings-error" id="settings-error" role="alert" hidden></p>
+      <div class="drawer-actions"><button class="secondary-button" id="cancel-settings" type="button">Cancel</button><button class="primary-button" type="submit">Save settings <span aria-hidden="true">↗</span></button></div>
+    </form>
+  </aside>
+</body>
+</html>
