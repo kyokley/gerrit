@@ -1,7 +1,7 @@
 [project]
 name = "gerrit"
 version = "0.1.0"
-description = "Add your description here"
+description = "Local multiplexing AI agent workbench with incremental Gerrit reviews"
 readme = "README.md"
 authors = [
     { name = "Kevin Yokley", email = "kevin.yokley@oracle.com" }
