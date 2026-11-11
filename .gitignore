@@ -16,3 +16,7 @@ etc/*
 *.png
 
 .slim/deepwork/
+
+# Python runtime and test caches
+__pycache__/
+*.py[cod]
